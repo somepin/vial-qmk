@@ -347,6 +347,14 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM JoystickReport[] = {
 };
 #endif
 
+#ifndef SERIAL_NUMBER
+#ifdef VIAL_ENABLE
+#    define SERIAL_NUMBER vial:f64c2b3c
+#else
+#    define SERIAL_NUMBER 0
+#endif
+#endif
+
 /*
  * Device descriptor
  */
@@ -953,14 +961,6 @@ const USB_Descriptor_String_t PROGMEM ProductString = {
     },
     .UnicodeString              = LSTR(PRODUCT)
 };
-
-#ifndef SERIAL_NUMBER
-#ifdef VIAL_ENABLE
-#    define SERIAL_NUMBER vial:f64c2b3c
-#else
-#    define SERIAL_NUMBER 0
-#endif
-#endif
 
 #if defined(SERIAL_NUMBER)
 const USB_Descriptor_String_t PROGMEM SerialNumberString = {
