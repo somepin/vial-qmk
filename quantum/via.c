@@ -46,9 +46,14 @@
 #include "dynamic_keymap.h"
 #include "tmk_core/common/eeprom.h"
 #include "version.h"  // for QMK_BUILDDATE used in EEPROM magic
+#include "via_ensure_keycode.h"
 
 #ifdef VIAL_ENABLE
 #include "vial.h"
+#endif
+
+#ifdef VIALRGB_ENABLE
+#include "vialrgb.h"
 #endif
 
 // Forward declare some helpers.
@@ -256,8 +261,9 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
                 }
                 case id_switch_matrix_state: {
 #ifdef VIAL_ENABLE
-                    /* We don't need this wannabe keylogger */
-                    goto skip;
+                    /* Disable wannabe keylogger unless unlocked */
+                    if (!vial_unlocked)
+                        goto skip;
 #endif
 
 #if ((MATRIX_COLS / 8 + 1) * MATRIX_ROWS <= 28)
@@ -320,10 +326,13 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
 #if defined(VIA_QMK_RGBLIGHT_ENABLE)
             via_qmk_rgblight_set_value(command_data);
 #endif
+#if defined(VIALRGB_ENABLE)
+            vialrgb_set_value(data, length);
+#endif
 #if defined(VIA_CUSTOM_LIGHTING_ENABLE)
             raw_hid_receive_kb(data, length);
 #endif
-#if !defined(VIA_QMK_BACKLIGHT_ENABLE) && !defined(VIA_QMK_RGBLIGHT_ENABLE) && !defined(VIA_CUSTOM_LIGHTING_ENABLE)
+#if !defined(VIA_QMK_BACKLIGHT_ENABLE) && !defined(VIA_QMK_RGBLIGHT_ENABLE) && !defined(VIALRGB_ENABLE) && !defined(VIA_CUSTOM_LIGHTING_ENABLE)
             // Return the unhandled state
             *command_id = id_unhandled;
 #endif
@@ -336,10 +345,13 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
 #if defined(VIA_QMK_RGBLIGHT_ENABLE)
             via_qmk_rgblight_get_value(command_data);
 #endif
+#if defined(VIALRGB_ENABLE)
+            vialrgb_get_value(data, length);
+#endif
 #if defined(VIA_CUSTOM_LIGHTING_ENABLE)
             raw_hid_receive_kb(data, length);
 #endif
-#if !defined(VIA_QMK_BACKLIGHT_ENABLE) && !defined(VIA_QMK_RGBLIGHT_ENABLE) && !defined(VIA_CUSTOM_LIGHTING_ENABLE)
+#if !defined(VIA_QMK_BACKLIGHT_ENABLE) && !defined(VIA_QMK_RGBLIGHT_ENABLE) && !defined(VIALRGB_ENABLE) && !defined(VIA_CUSTOM_LIGHTING_ENABLE)
             // Return the unhandled state
             *command_id = id_unhandled;
 #endif
@@ -352,10 +364,13 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
 #if defined(VIA_QMK_RGBLIGHT_ENABLE)
             eeconfig_update_rgblight_current();
 #endif
+#if defined(VIALRGB_ENABLE)
+            vialrgb_save(data, length);
+#endif
 #if defined(VIA_CUSTOM_LIGHTING_ENABLE)
             raw_hid_receive_kb(data, length);
 #endif
-#if !defined(VIA_QMK_BACKLIGHT_ENABLE) && !defined(VIA_QMK_RGBLIGHT_ENABLE) && !defined(VIA_CUSTOM_LIGHTING_ENABLE)
+#if !defined(VIA_QMK_BACKLIGHT_ENABLE) && !defined(VIA_QMK_RGBLIGHT_ENABLE) && !defined(VIALRGB_ENABLE) && !defined(VIA_CUSTOM_LIGHTING_ENABLE)
             // Return the unhandled state
             *command_id = id_unhandled;
 #endif
@@ -412,16 +427,12 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
                 dynamic_keymap_set_buffer(offset, size, &command_data[3]);
             break;
         }
-        case id_eeprom_reset: {
-            via_eeprom_reset();
-            break;
-        }
+#if defined(VIAL_ENABLE) && !defined(VIAL_INSECURE)
+        /* As VIA removed bootloader jump entirely, we shall only keep it for secure builds */
         case id_bootloader_jump: {
-#ifdef VIAL_ENABLE
             /* Until keyboard is unlocked, don't allow jumping to bootloader */
             if (!vial_unlocked)
                 goto skip;
-#endif
             // Need to send data back before the jump
             // Informs host that the command is handled
             raw_hid_send(data, length);
@@ -430,6 +441,7 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
             bootloader_jump();
             break;
         }
+#endif
 #ifdef VIAL_ENABLE
         case id_vial_prefix: {
             vial_handle_cmd(data, length);
@@ -437,9 +449,8 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
         }
 #endif
         default: {
-            // The command ID is not known
-            // Return the unhandled state
-            *command_id = id_unhandled;
+            // The command ID is not known let the keyboard implement it
+            raw_hid_receive_kb(data, length);
             break;
         }
     }

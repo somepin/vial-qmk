@@ -1,4 +1,7 @@
 VIA_ENABLE = yes
+<<<<<<< HEAD
 VIAL_ENABLE = yes
 VIAL_ENCODERS_ENABLE = yes 
+=======
+>>>>>>> 47d028fa52193bd9b7564b7b8d0db97258a7f5a2
 LTO_ENABLE = yes

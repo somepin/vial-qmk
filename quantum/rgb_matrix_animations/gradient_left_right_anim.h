@@ -1,4 +1,5 @@
 #ifndef DISABLE_RGB_MATRIX_GRADIENT_LEFT_RIGHT
+#define RGB_MATRIX_EFFECT_GRADIENT_LEFT_RIGHT
 RGB_MATRIX_EFFECT(GRADIENT_LEFT_RIGHT)
 #    ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
@@ -12,7 +13,7 @@ bool GRADIENT_LEFT_RIGHT(effect_params_t* params) {
         // The x range will be 0..224, map this to 0..7
         // Relies on hue being 8-bit and wrapping
         hsv.h   = rgb_matrix_config.hsv.h + (scale * g_led_config.point[i].x >> 5);
-        RGB rgb = hsv_to_rgb(hsv);
+        RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
         rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
     }
     return led_max < DRIVER_LED_TOTAL;

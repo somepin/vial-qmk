@@ -25,9 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    hineybush keyboards
 #define PRODUCT         h88
-#define DESCRIPTION     QMK-programmable TKL PCB for custom keyboards with an extra key in the F-row
 
-
+#define VIAL_KEYBOARD_UID { 0xFC, 0x16, 0x30, 0x20, 0xDA, 0x5F, 0xCA, 0xAD }
+#define VIAL_UNLOCK_COMBO_ROWS { 0, 7 }
+#define VIAL_UNLOCK_COMBO_COLS { 0, 6 }
 
 /* key matrix size */
 #define MATRIX_ROWS 12

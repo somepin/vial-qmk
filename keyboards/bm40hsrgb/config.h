@@ -18,8 +18,8 @@
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
-#define VENDOR_ID       0xFEED
-#define PRODUCT_ID      0x6060
+#define VENDOR_ID       0x4B50 // "KP"
+#define PRODUCT_ID      0x3430 // "40"
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    KPRepublic
 #define PRODUCT         BM40 Hotswap RGB
@@ -50,3 +50,13 @@
 #ifdef RGB_DI_PIN
     #define RGB_MATRIX_KEYPRESSES // reacts to keypresses
 #endif
+#ifndef RGB_DISABLE_WHEN_USB_SUSPENDED
+#    define RGB_DISABLE_WHEN_USB_SUSPENDED true // turn off effects when suspended
+#endif
+
+/* Configuration for Vial */
+#define VIAL_KEYBOARD_UID {0x6A, 0x02, 0xE7, 0x64, 0x1D, 0x59, 0x0D, 0xC8}
+
+// to unlock the keyboard
+#define VIAL_UNLOCK_COMBO_ROWS { 0, 2 }
+#define VIAL_UNLOCK_COMBO_COLS { 0, 11 }

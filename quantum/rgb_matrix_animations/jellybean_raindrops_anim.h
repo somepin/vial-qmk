@@ -1,11 +1,12 @@
 #ifndef DISABLE_RGB_MATRIX_JELLYBEAN_RAINDROPS
+#define RGB_MATRIX_EFFECT_JELLYBEAN_RAINDROPS
 RGB_MATRIX_EFFECT(JELLYBEAN_RAINDROPS)
 #    ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
 static void jellybean_raindrops_set_color(int i, effect_params_t* params) {
     if (!HAS_ANY_FLAGS(g_led_config.flags[i], params->flags)) return;
     HSV hsv = {rand() & 0xFF, rand() & 0xFF, rgb_matrix_config.hsv.v};
-    RGB rgb = hsv_to_rgb(hsv);
+    RGB rgb = rgb_matrix_hsv_to_rgb(hsv);
     rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
 }
 

@@ -14,19 +14,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PROCESS_COMBO_H
-#define PROCESS_COMBO_H
+#pragma once
+
+#ifdef VIAL_ENABLE
+#include "vial.h"
+#endif
 
 #include "progmem.h"
 #include "quantum.h"
 #include <stdint.h>
 
 #ifdef EXTRA_EXTRA_LONG_COMBOS
-#    define MAX_COMBO_LENGTH 32
+#    define MAX_COMBO_LENGTH 31
+#    define COMBO_COMPLETE 0x80000000u
 #elif EXTRA_LONG_COMBOS
-#    define MAX_COMBO_LENGTH 16
+#    define MAX_COMBO_LENGTH 15
+#    define COMBO_COMPLETE 0x8000u
 #else
-#    define MAX_COMBO_LENGTH 8
+#    define MAX_COMBO_LENGTH 7
+#    define COMBO_COMPLETE 0x80u
 #endif
 
 typedef struct {
@@ -62,5 +68,3 @@ void combo_enable(void);
 void combo_disable(void);
 void combo_toggle(void);
 bool is_combo_enabled(void);
-
-#endif

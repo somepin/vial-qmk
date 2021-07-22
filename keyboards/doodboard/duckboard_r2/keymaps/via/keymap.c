@@ -45,14 +45,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),
 };
 
+<<<<<<< HEAD
 void encoder_update_user(uint8_t index, bool clockwise) {
+=======
+bool encoder_update_user(uint8_t index, bool clockwise) {
+>>>>>>> 47d028fa52193bd9b7564b7b8d0db97258a7f5a2
     if (index == 0) { /* First encoder */
         if (clockwise) {
             tap_code(KC_VOLU);
         } else {
             tap_code(KC_VOLD);
         }
+<<<<<<< HEAD
 }
+=======
+    }
+    return true;
+>>>>>>> 47d028fa52193bd9b7564b7b8d0db97258a7f5a2
 }
 
 
@@ -114,8 +123,13 @@ void oled_task_user(void) {
         case 2:
             oled_write_P(PSTR("RGB\n"), false);
             break;
+<<<<<<< HEAD
         default:
             oled_write_P(PSTR("QUACK\n"), false);
+=======
+        case 3:
+            oled_write_P(PSTR("FN2\n"), false);
+>>>>>>> 47d028fa52193bd9b7564b7b8d0db97258a7f5a2
             break;
     }
 }

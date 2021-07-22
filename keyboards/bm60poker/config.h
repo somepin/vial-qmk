@@ -21,10 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* USB Device descriptor parameter */
 #define VENDOR_ID       0x4B50 // "KP"
-#define PRODUCT_ID      0xEF8E
+#define PRODUCT_ID      0xEF8D
 #define DEVICE_VER      0x0001
 #define MANUFACTURER    KP Republic
-#define PRODUCT         BM60POKER
+#define PRODUCT         BM60 RGB POKER
 
 /* key matrix size */
 #define MATRIX_ROWS 5
@@ -44,6 +44,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_COL_PINS { D0, D1, D2, D3, D5, D4, D6, D7, B4, B5, B6, C6, C7, F7 }
 
 #define DIODE_DIRECTION COL2ROW
+
+#define VIAL_KEYBOARD_UID {0x1B, 0x11, 0x17, 0xDD, 0x7C, 0xD2, 0x16, 0xB2}
+#define VIAL_UNLOCK_COMBO_ROWS { 0, 2 }
+#define VIAL_UNLOCK_COMBO_COLS { 0, 13}
 
 #define RGB_DI_PIN E2
 #define DRIVER_LED_TOTAL 67
