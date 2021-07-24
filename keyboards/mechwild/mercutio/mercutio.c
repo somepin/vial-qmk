@@ -16,3 +16,7 @@
 
 
 #include "mercutio.h"
+
+void suspend_power_down_kb(void) {
+    oled_off();
+}
