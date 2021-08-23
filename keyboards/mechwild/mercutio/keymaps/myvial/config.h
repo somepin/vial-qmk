@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Define custom font */
 #define OLED_FONT_H "users/drashna/drashna_font.h"
 #define OLED_FONT_5X5
-#define OLED_LOGO_GMK_BAD
+#define OLED_LOGO_GMK_BAD_NERV
 
 /* VIAL Specific definitions */
 #define DYNAMIC_KEYMAP_LAYER_COUNT 6
