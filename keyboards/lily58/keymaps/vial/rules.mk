@@ -1,0 +1,10 @@
+LTO_ENABLE = yes
+VIA_ENABLE = yes
+VIAL_ENABLE = yes
+QMK_SETTINGS = no
+EXTRAKEY_ENABLE = no
+COMBO_ENABLE = no
+TAP_DANCE_ENABLE = no
+WPM_ENABLE = yes
+
+SRC +=  oled.c
