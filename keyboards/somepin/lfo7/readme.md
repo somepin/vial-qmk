@@ -1,12 +1,12 @@
 # LFO7
 
-A low profile (TTC/Cherry/Choc v1) 3x3 macropad that supports 2 Panasonic EVQWGD001 rotary encoders.
+A low profile (TTC KS32/Cherry LP/Choc v1) 3x3 macropad that supports 2 [Panasonic EVQWGD001](https://www.aliexpress.com/item/32990950196.html) rotary encoders.
 
-**Keyboard Maintainer:** [somepin](https://github.com/somepin)
+Based on [Keebio's BDN9](https://keeb.io/products/bdn9-rev-2-3x3-9-key-macropad-rotary-encoder-and-rgb) Rev. 1.
 
-**Hardware Availability:**
+Keyboard Maintainer: [somepin](https://github.com/somepin)
 
--   private proto
+Hardware Availability: Private proto
 
 Make examples for this keyboard (after setting up your build environment), select the appropriate line for your PCB revision:
 
