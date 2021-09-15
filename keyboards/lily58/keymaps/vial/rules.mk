@@ -7,4 +7,4 @@ COMBO_ENABLE = no
 TAP_DANCE_ENABLE = no
 WPM_ENABLE = yes
 
-SRC +=  oled.c
+SRC += oled.c

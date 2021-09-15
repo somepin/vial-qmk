@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define VIAL_KEYBOARD_UID {0x60, 0xC9, 0x42, 0x36, 0xEC, 0xC3, 0x87, 0x19}
 #define VIAL_UNLOCK_COMBO_ROWS { 0, 7 }
 #define VIAL_UNLOCK_COMBO_COLS { 0, 0 }
-#define NO_ACTION_ONESHOT
+
 //#define USE_MATRIX_I2C
 
 /* Select hand configuration */
