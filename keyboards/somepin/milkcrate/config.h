@@ -24,23 +24,36 @@
 #define PRODUCT         Milk Crate
 
 /* key matrix size */
-#define MATRIX_ROWS 2
+#define MATRIX_ROWS 3
 #define MATRIX_COLS 1
 
 /* Milk default pinout */
 #define DIRECT_PINS { \
     {D7}, \
-    {E6}  \
+    {E6}, \
+    {B4}, \
 }
 #define UNUSED_PINS
 
-#ifdef RGBLIGHT_ENABLE
+#ifdef RGB_MATRIX_ENABLE
+// The pin connected to the data pin of the LEDs
 #define RGB_DI_PIN B1
-#define RGBLED_NUM 1
-#define RGBLIGHT_EFFECT_BREATHING
-#define RGBLIGHT_EFFECT_RAINBOW_MOOD
-#define RGBLIGHT_EFFECT_CHRISTMAS
-#define RGBLIGHT_EFFECT_ALTERNATING
-#define RGBLIGHT_EFFECT_TWINKLE
-#define RGBLIGHT_SLEEP
+// The number of LEDs connected
+#define DRIVER_LED_TOTAL 3
+#define RGB_DISABLE_WHEN_USB_SUSPENDED true
 #endif
+
+// #ifdef RGBLIGHT_ENABLE
+// #define RGB_DI_PIN B1
+// #define RGBLED_NUM 3
+// #define RGBLIGHT_ANIMATIONS
+// // #define RGBLIGHT_EFFECT_BREATHING
+// // #define RGBLIGHT_EFFECT_RAINBOW_MOOD
+// // #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
+// // #define RGBLIGHT_MODE_SNAKE
+// // #define RGBLIGHT_MODE_KNIGHT
+// // #define RGBLIGHT_MODE_STATIC_GRADIENT
+// // #define RGBLIGHT_EFFECT_ALTERNATING
+// // #define RGBLIGHT_EFFECT_TWINKLE
+// #define RGBLIGHT_SLEEP
+// #endif

@@ -14,3 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "milkcrate.h"
+
+#ifdef RGB_MATRIX_ENABLE 
+
+led_config_t g_led_config = { {
+  // Key Matrix to LED Index
+  { 0 },
+  { 1 },
+  { 2 },
+}, {
+  // LED Index to Physical Position
+  { 37,  0 }, { 56,  0 }, { 112,  0 },
+}, {
+  // LED Index to Flag
+  2, 2, 2 // underglow
+} };
+
+#endif

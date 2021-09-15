@@ -2,6 +2,7 @@
     "name": "milk_crate",
     "vendorId": "0x7370",
     "productId": "0x6D63",
+    "lighting": "vialrgb",
     "matrix": {
         "rows": 2,
         "cols": 1
