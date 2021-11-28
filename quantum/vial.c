@@ -475,7 +475,7 @@ static void on_dance_reset(qk_tap_dance_state_t *state, void *user_data) {
     }
 }
 
-qk_tap_dance_action_t tap_dance_actions[VIAL_TAP_DANCE_ENTRIES];
+qk_tap_dance_action_t tap_dance_actions[VIAL_TAP_DANCE_ENTRIES] = { };
 
 /* Load timings from eeprom into custom_tapping_term */
 static void reload_tap_dance(void) {
@@ -493,7 +493,7 @@ static void reload_tap_dance(void) {
 #endif
 
 #ifdef VIAL_COMBO_ENABLE
-combo_t key_combos[VIAL_COMBO_ENTRIES];
+combo_t key_combos[VIAL_COMBO_ENTRIES] = { };
 uint16_t key_combos_keys[VIAL_COMBO_ENTRIES][5];
 
 static void reload_combo(void) {
@@ -514,3 +514,33 @@ static void reload_combo(void) {
     }
 }
 #endif
+
+#ifdef VIAL_TAP_DANCE_ENABLE
+void process_tap_dance_action_on_dance_finished(qk_tap_dance_action_t *action);
+#endif
+
+bool process_record_vial(uint16_t keycode, keyrecord_t *record) {
+#ifdef VIAL_TAP_DANCE_ENABLE
+    /* process releases before tap-dance timeout arrives */
+    if (!record->event.pressed && keycode >= QK_TAP_DANCE && keycode <= QK_TAP_DANCE_MAX) {
+        uint16_t idx = keycode - QK_TAP_DANCE;
+        if (dynamic_keymap_get_tap_dance(idx, &td_entry) != 0)
+            return true;
+
+        qk_tap_dance_action_t *action = &tap_dance_actions[idx];
+
+        /* only care about 2 possibilities here
+           - tap and hold set, everything else unset: process first release early (count == 1)
+           - double tap set: process second release early (count == 2)
+         */
+        if ((action->state.count == 1 && td_entry.on_tap && td_entry.on_hold && !td_entry.on_double_tap && !td_entry.on_tap_hold)
+            || (action->state.count == 2 && td_entry.on_double_tap)) {
+                action->state.pressed = false;
+                process_tap_dance_action_on_dance_finished(action);
+                /* reset_tap_dance() will get called in process_tap_dance() */
+            }
+    }
+#endif
+
+    return true;
+}
