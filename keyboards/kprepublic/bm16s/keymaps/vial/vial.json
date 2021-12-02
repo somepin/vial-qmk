@@ -2,7 +2,7 @@
     "name": "KPrepublic bm16-s",
     "vendorId": "0x4B50",
     "productId": "0x016b",
-    "lighting": "qmk_rgblight",
+    "lighting": "vialrgb",
     "matrix": {
         "rows": 4,
         "cols": 4
