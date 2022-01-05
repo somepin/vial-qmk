@@ -3,22 +3,18 @@
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       [0] = LAYOUT(
           KC_Z,
-          KC_X,
-          KC_NO
+          KC_X
       ),
       [1] = LAYOUT(
           _______,
-          _______,
-          KC_NO
+          _______
       ),
       [2] = LAYOUT(
           _______,
-          _______,
-          KC_NO
+          _______
       ),
       [3] = LAYOUT(
           _______,
-          _______,
-          KC_NO
+          _______
       )
 };

@@ -24,14 +24,13 @@
 #define PRODUCT         Milk Crate
 
 /* key matrix size */
-#define MATRIX_ROWS 3
+#define MATRIX_ROWS 2
 #define MATRIX_COLS 1
 
 /* Milk default pinout */
 #define DIRECT_PINS { \
     {D7}, \
     {E6}, \
-    {B4}, \
 }
 #define UNUSED_PINS
 
