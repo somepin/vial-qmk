@@ -194,10 +194,11 @@ else
         # This will effectively work the same as "transient" if not supported by the chip
         SRC += $(PLATFORM_COMMON_DIR)/eeprom_teensy.c
       endif
-	else ifeq ($(PLATFORM),PICO_SDK)
-      SRC += $(PLATFORM_COMMON_DIR)/eeprom.c
     else ifeq ($(PLATFORM),ARM_ATSAM)
       SRC += $(PLATFORM_COMMON_DIR)/eeprom.c
+    else ifeq ($(PLATFORM),PICO_SDK)
+      SRC += $(PLATFORM_COMMON_DIR)/eeprom.c
+      SRC += $(PLATFORM_COMMON_DIR)/flash_pico.c
     else ifeq ($(PLATFORM),TEST)
       SRC += $(PLATFORM_COMMON_DIR)/eeprom.c
     endif
