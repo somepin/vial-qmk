@@ -1,0 +1,15 @@
+#pragma once
+
+#define VIAL_KEYBOARD_UID {0x58, 0xDB, 0xD9, 0x24, 0x1B, 0x26, 0x66, 0x76}
+#define VIAL_UNLOCK_COMBO_ROWS { 1, 5 }
+#define VIAL_UNLOCK_COMBO_COLS { 10, 7 }
+
+#define DYNAMIC_KEYMAP_LAYER_COUNT 3
+#define VIAL_TAP_DANCE_ENTRIES 5
+#define VIAL_COMBO_ENTRIES 5
+
+#undef MANUFACTURER
+#define MANUFACTURER Space Invader
+
+#undef PRODUCT
+#define PRODUCT AT Converter
