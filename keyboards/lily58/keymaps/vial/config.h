@@ -20,11 +20,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define VIAL_KEYBOARD_UID {0x60, 0xC9, 0x42, 0x36, 0xEC, 0xC3, 0x87, 0x19}
-#define VIAL_UNLOCK_COMBO_ROWS { 0, 7 }
-#define VIAL_UNLOCK_COMBO_COLS { 0, 0 }
+/* VIAL UID for Lily58*/
+#define VIAL_KEYBOARD_UID {0x7E, 0xFD, 0xFC, 0x5B, 0x7D, 0x39, 0x48, 0x06}
 
-//#define USE_MATRIX_I2C
+/* VIAL secure unlock keystroke - currently both big keys (typ. SPACE/ENTER) */
+#define VIAL_UNLOCK_COMBO_ROWS {4, 9}
+#define VIAL_UNLOCK_COMBO_COLS {4, 4}
+
+/* Space reduction */
+
+#define DYNAMIC_KEYMAP_LAYER_COUNT 6
+#define VIAL_TAP_DANCE_ENTRIES 4
+#undef LOCKING_SUPPORT_ENABLE
+#undef LOCKING_RESYNC_ENABLE
+#define NO_ACTION_ONESHOT
 
 /* Select hand configuration */
 
