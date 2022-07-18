@@ -1,4 +1,4 @@
-/* Copyright 2020-2021 doodboard
+/* Copyright 2022 doodboard
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,43 +22,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                  KC_4,    KC_5,    KC_6,    KC_PPLS,
         KC_MUTE, KC_1,    KC_2,    KC_3,    KC_ENT,
         KC_BSPC, KC_0,    KC_0,    KC_DOT,  KC_ENT),
+
     [1] = LAYOUT(
                  TG(1),   KC_TRNS, KC_TRNS, KC_TRNS,
                  KC_HOME, KC_UP,   KC_PGUP, KC_TRNS,
                  KC_LEFT, KC_TRNS, KC_RGHT, KC_TRNS,
         KC_TRNS, KC_END,  KC_DOWN, KC_PGDN, KC_TRNS,
         TG(2),   KC_TRNS, KC_INS,  KC_DEL,  KC_TRNS),
+
     [2] = LAYOUT(
                  KC_TRNS, RGB_TOG, RGB_MOD, KC_TRNS,
                  RGB_HUI, RGB_SAI, RGB_VAI, KC_TRNS,
                  RGB_HUD, RGB_SAD, RGB_VAD, KC_TRNS,
-        RESET,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-        TG(2),   RESET,   KC_TRNS, KC_TRNS, KC_TRNS),
+        QK_BOOT,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+        TG(2),   QK_BOOT,   KC_TRNS, KC_TRNS, KC_TRNS),
+
     [3] = LAYOUT(
                  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),  
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),
+
     [4] = LAYOUT(
                  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),
+        
     [5] = LAYOUT(
-                 KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                 KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                 KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),
-    [6] = LAYOUT(
-                 KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                 KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-                 KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
-        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),
-    [7] = LAYOUT(
                  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
                  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
@@ -77,69 +70,32 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     return true;
 }
 
+#ifdef RGB_MATRIX_ENABLE
+#define XX NO_LED
 
-#ifdef OLED_ENABLE
-oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_270; }
-
-
-// WPM-responsive animation stuff here
-#define IDLE_FRAMES 2
-#define IDLE_SPEED 40 // below this wpm value your animation will idle
-
-#define ANIM_FRAME_DURATION 200 // how long each frame lasts in ms
-// #define SLEEP_TIMER 60000 // should sleep after this period of 0 wpm, needs fixing
-#define ANIM_SIZE 636 // number of bytes in array, minimize for adequate firmware size, max is 1024
-
-uint32_t anim_timer = 0;
-uint32_t anim_sleep = 0;
-uint8_t current_idle_frame = 0;
-
-// Credit to u/Pop-X- for the initial code. You can find his commit here https://github.com/qmk/qmk_firmware/pull/9264/files#diff-303f6e3a7a5ee54be0a9a13630842956R196-R333.
-static void render_anim(void) {
-    static const char PROGMEM idle[IDLE_FRAMES][ANIM_SIZE] = {
-        {
-        0,  0,192,192,192,192,192,192,192,248,248, 30, 30,254,254,248,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3,  3,  3,  3,  3,255,255,255,255,255,255,255,128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,127,127,255,255,255,255,255,159,159,135,135,129,129,129, 97, 97, 25, 25,  7,  7,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1, 97, 97,127,  1,  1, 97, 97,127,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0
-        },
-        {
-        0,  0,128,128,128,128,128,128,128,240,240, 60, 60,252,252,240,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  7,  7,  7,  7,  7,255,255,254,254,255,255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,255,255,255,255,255, 63, 63, 15, 15,  3,  3,  3,195,195, 51, 51, 15, 15,  3,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3,  3, 99, 99,127,  3,  3, 99, 99,127,  3,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0
-        }
-    };
-
-    //assumes 1 frame prep stage
-    void animation_phase(void) {
-            current_idle_frame = (current_idle_frame + 1) % IDLE_FRAMES;
-            oled_write_raw_P(idle[abs((IDLE_FRAMES-1)-current_idle_frame)], ANIM_SIZE);
-    }
-
-        if(timer_elapsed32(anim_timer) > ANIM_FRAME_DURATION) {
-            anim_timer = timer_read32();
-            animation_phase();
-        }
-    }
-
-bool oled_task_user(void) {
-        render_anim();
-        oled_set_cursor(0,6);
-        oled_write_P(PSTR("DUCK\nBOARD\n"), false);
-    oled_write_P(PSTR("-----\n"), false);
-    // Host Keyboard Layer Status
-    oled_write_P(PSTR("MODE\n"), false);
-    oled_write_P(PSTR("\n"), false);
-
-    switch (get_highest_layer(layer_state)) {
-        case 0:
-            oled_write_P(PSTR("BASE\n"), false);
-            break;
-        case 1:
-            oled_write_P(PSTR("FUNC\n"), false);
-            break;
-        case 2:
-            oled_write_P(PSTR("RGB\n"), false);
-            break;
-        default:
-            oled_write_P(PSTR("QUACK\n"), false);
-            break;
-    }
-    return false;
-}
+led_config_t g_led_config = { 
+    {
+        // Key Matrix to LED Index
+        { XX, 7,  XX, 6,  XX },
+        { 0,  XX, XX, XX, 5  },
+        { XX, XX, XX, XX, XX },
+        { 1,  XX, XX, XX, 4  },
+        { XX, 2,  XX, 3,  XX } 
+    }, {
+        // LED Index to Physical Position
+        { 0, 16 }, { 0, 48 }, { 56, 64 }, { 168, 64 }, { 224, 48 }, {  224, 16 }, { 168, 0 }, { 56, 0 }
+    }, {
+        // LED Index to Flag
+        2, 2, 2, 2, 2, 2, 2, 2
+    } 
+};
 #endif
+
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
+    [0] = { ENCODER_CCW_CW(KC_VOLD, KC_VOLU) },
+    [1] = { ENCODER_CCW_CW(KC_UP, KC_DOWN) },
+    [2] = { ENCODER_CCW_CW(KC_TRNS, KC_TRNS) },
+    [3] = { ENCODER_CCW_CW(KC_TRNS, KC_TRNS) },
+    [4] = { ENCODER_CCW_CW(KC_TRNS, KC_TRNS) },
+    [5] = { ENCODER_CCW_CW(KC_TRNS, KC_TRNS) },
+};

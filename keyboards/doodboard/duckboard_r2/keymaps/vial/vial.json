@@ -2,7 +2,7 @@
     "name": "doodboard duckboard",
     "vendorId": "0x4442",
     "productId": "0x6462",
-    "lighting": "qmk_rgblight",
+    "lighting": "vialrgb",
     "matrix": { "rows": 5, "cols": 5 },
     "layouts": {
         "labels": ["Split Plus", "Split Enter", "Split Zero"],
