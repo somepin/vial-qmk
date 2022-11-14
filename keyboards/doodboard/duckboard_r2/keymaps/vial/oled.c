@@ -31,7 +31,7 @@ static void oled_write_compressed_P(const char* input_block_map, const char* inp
         }
     }
 }
-#endif
+#endif // USE_OLED_BITMAP_COMPRESSION
 
 static void render_anim(void) {
     void animation_phase(void) {
@@ -41,7 +41,7 @@ static void render_anim(void) {
         oled_write_compressed_P(idle_block_map[idx], idle_frames[idx]);
         #else
         oled_write_raw_P(idle_frames[idx], NUM_OLED_BYTES);
-        #endif
+        #endif // USE_OLED_BITMAP_COMPRESSION
     }
 
     if (timer_elapsed32(anim_timer) > IDLE_FRAME_DURATION) {
@@ -50,33 +50,46 @@ static void render_anim(void) {
     }
 }
 
-bool oled_task_user(void) {
-    render_anim();
-    oled_set_cursor(0,6);
-    oled_write_P(PSTR("DUCK\nBOARD\n"), false);
-    oled_write_P(PSTR("-----\n"), false);
-    // Host Keyboard Layer Status
-    oled_write_P(PSTR("MODE\n\n"), false);
+static uint16_t oled_timer = 0;
 
-    switch (get_highest_layer(layer_state)) {
-        case 0:
-            oled_write_P(PSTR("BASE\n"), false);
-            break;
-        case 1:
-            oled_write_P(PSTR("FUNC\n"), false);
-            break;
-        case 2:
-            oled_write_P(PSTR("FUNC2\n"), false);
-            break;
-        case 3:
-            oled_write_P(PSTR("FUNC3\n"), false);
-            break;
-        case 4:
-            oled_write_P(PSTR("FUNC4\n"), false);
-            break;
-        default:
-            oled_write_P(PSTR("QUACK\n"), false);
-            break;
+bool oled_task_user(void) {
+    if (oled_timer == 0) {
+        oled_timer = timer_read();
+    }
+    if (is_oled_on() && (timer_elapsed(oled_timer) < 20000)) {
+        render_anim();
+        oled_set_cursor(0,6);
+        oled_write_P(PSTR("DUCK\nBOARD\n"), false);
+        oled_write_P(PSTR("-----\n"), false);
+        // Host Keyboard Layer Status
+        oled_write_P(PSTR("MODE\n"), false);
+
+        switch (get_highest_layer(layer_state)) {
+            case 0:
+                oled_write_P(PSTR("BASE\n"), false);
+                break;
+            case 1:
+                oled_write_P(PSTR("FUNC\n"), false);
+                break;
+            case 2:
+                oled_write_P(PSTR("FUNC2\n"), false);
+                break;
+            case 3:
+                oled_write_P(PSTR("FUNC3\n"), false);
+                break;
+            case 4:
+                oled_write_P(PSTR("FUNC4\n"), false);
+                break;
+            default:
+                oled_write_P(PSTR("QUACK\n"), false);
+                break;
+        }
+        
+        led_t led_state = host_keyboard_led_state();
+        oled_write_P(led_state.num_lock ? PSTR("NUM  ") : PSTR("     "), false);
+
+    } else if (is_oled_on()) {
+        oled_off();
     }
     return false;
 }
@@ -84,4 +97,15 @@ bool oled_task_user(void) {
 void suspend_power_down_user(void) {
     oled_off();
 }
-#endif
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (record->event.pressed) {
+        oled_timer = timer_read();
+        if (!is_oled_on()){
+            oled_on();
+        }
+    }
+    return true;
+}
+
+#endif // OLED_ENABLE
