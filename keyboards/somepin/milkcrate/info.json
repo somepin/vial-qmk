@@ -1,0 +1,55 @@
+{
+    "manufacturer": "somepin",
+    "keyboard_name": "Milk Crate",
+    "maintainer": "somepin",
+    "url":"https://github.com/somepin/milk-crate",
+    "bootloader": "atmel-dfu",
+    "bootmagic": {
+        "enabled": false
+    },
+    "features": {
+        "audio": false,
+        "backlight": false,
+        "bootmagic": false,
+        "command": false,
+        "console": false,
+        "extrakey": true,
+        "mousekey": false,
+        "nkro": true,
+        "rgb_matrix": true,
+        "rgblight": false,
+        "sleep_led": false
+    },
+    "matrix_pins": {
+        "direct": [["D7"], ["E6"]]
+    },
+    "mouse_key": {
+        "enabled": false
+    },
+    "processor": "atmega32u4",
+    "rgb_matrix": {
+        "driver": "ws2812",
+        "layout": [
+            { "matrix": [0, 0], "x": 37, "y": 0, "flags": 2 },
+            { "x": 56, "y": 0, "flags": 2 },
+            { "matrix": [1, 0], "x": 112, "y": 0, "flags": 2 }
+        ],
+        "sleep": true
+    },
+    "usb": {
+        "device_version": "0.0.1",
+        "pid": "0x6D63",
+        "vid": "0x7370"
+    },
+    "ws2812": {
+        "pin": "B1"
+    },
+    "layouts": {
+        "LAYOUT": {
+            "layout": [
+                { "label": "K00", "matrix": [0, 0], "x": 0, "y": 0 },
+                { "label": "K01", "matrix": [1, 0], "x": 1, "y": 0 }
+            ]
+        }
+    }
+}
