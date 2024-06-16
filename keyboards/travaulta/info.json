@@ -1,0 +1,93 @@
+{
+    "keyboard_name": "travaulta",
+    "manufacturer": "calvin-mcd",
+    "url": "https://github.com/calvin-mcd",
+    "maintainer": "calvin-mcd",
+    "processor": "STM32F401",
+    "bootloader": "stm32-dfu",
+    "board": "GENERIC_STM32_F401XC",
+    "usb": {
+        "vid": "0x6369",
+        "pid": "0x6B84",
+        "device_version": "0.0.1"
+    },
+    "layouts": {
+        "LAYOUT": {
+            "layout": [
+                { "label": "k0A", "matrix": [0, 0], "x": 0, "y": 0 },
+                { "label": "k0B", "matrix": [0, 1], "x": 1, "y": 0 },
+                { "label": "k0C", "matrix": [0, 2], "x": 2, "y": 0 },
+                { "label": "k0D", "matrix": [0, 3], "x": 3, "y": 0 },
+                { "label": "k0E", "matrix": [0, 4], "x": 4, "y": 0 },
+                { "label": "k0F", "matrix": [0, 5], "x": 5, "y": 0 },
+                { "label": "k0G", "matrix": [0, 6], "x": 6, "y": 0 },
+                { "label": "k0H", "matrix": [0, 7], "x": 7, "y": 0 },
+                { "label": "k0I", "matrix": [0, 8], "x": 8, "y": 0 },
+                { "label": "k0J", "matrix": [0, 9], "x": 9, "y": 0 },
+                { "label": "k0K", "matrix": [0, 10], "x": 10, "y": 0 },
+                { "label": "k1A", "matrix": [1, 0], "x": 0, "y": 1, "w": 1.25 },
+                { "label": "k1B", "matrix": [1, 1], "x": 1.25, "y": 1 },
+                { "label": "k1C", "matrix": [1, 2], "x": 2.25, "y": 1 },
+                { "label": "k1D", "matrix": [1, 3], "x": 3.25, "y": 1 },
+                { "label": "k1E", "matrix": [1, 4], "x": 4.25, "y": 1 },
+                { "label": "k1F", "matrix": [1, 5], "x": 5.25, "y": 1 },
+                { "label": "k1G", "matrix": [1, 6], "x": 6.25, "y": 1 },
+                { "label": "k1H", "matrix": [1, 7], "x": 7.25, "y": 1 },
+                { "label": "k1I", "matrix": [1, 8], "x": 8.25, "y": 1 },
+                {
+                    "label": "k1J",
+                    "matrix": [1, 9],
+                    "x": 9.25,
+                    "y": 1,
+                    "w": 1.75
+                },
+                { "label": "k2A", "matrix": [2, 0], "x": 0, "y": 2, "w": 1.75 },
+                { "label": "k2B", "matrix": [2, 1], "x": 1.75, "y": 2 },
+                { "label": "k2C", "matrix": [2, 2], "x": 2.75, "y": 2 },
+                { "label": "k2D", "matrix": [2, 3], "x": 3.75, "y": 2 },
+                { "label": "k2E", "matrix": [2, 4], "x": 4.75, "y": 2 },
+                { "label": "k2F", "matrix": [2, 5], "x": 5.75, "y": 2 },
+                { "label": "k2G", "matrix": [2, 6], "x": 6.75, "y": 2 },
+                { "label": "k2H", "matrix": [2, 7], "x": 7.75, "y": 2 },
+                { "label": "k2I", "matrix": [2, 8], "x": 8.75, "y": 2 },
+                {
+                    "label": "k2J",
+                    "matrix": [2, 9],
+                    "x": 9.75,
+                    "y": 2,
+                    "w": 1.25
+                },
+                { "label": "k3B", "matrix": [3, 1], "x": 1.5, "y": 3 },
+                {
+                    "label": "k3C",
+                    "matrix": [3, 2],
+                    "x": 2.5,
+                    "y": 3,
+                    "w": 1.25
+                },
+                {
+                    "label": "k3D",
+                    "matrix": [3, 3],
+                    "x": 3.75,
+                    "y": 3,
+                    "w": 1.75
+                },
+                {
+                    "label": "k3F",
+                    "matrix": [3, 5],
+                    "x": 5.5,
+                    "y": 3,
+                    "w": 1.75
+                },
+                {
+                    "label": "k3H",
+                    "matrix": [3, 7],
+                    "x": 7.25,
+                    "y": 3,
+                    "w": 1.25
+                },
+                { "label": "k3I", "matrix": [3, 8], "x": 8.5, "y": 3 }
+            ]
+        }
+    }
+}
