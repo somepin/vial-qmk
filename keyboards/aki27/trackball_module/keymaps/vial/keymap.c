@@ -19,87 +19,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 #include "quantum.h"
 
-
-// Defines names for use in layer keycodes and the keymap
-enum layer_number {
-    _BASE = 0,
-    _LOWER = 1,
-    _RAISE = 2,
-    _TRACKBALL = 3
-};
-
-
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  [_BASE] = LAYOUT(
-       KC_MS_BTN1,    KC_MS_BTN2,    KC_MS_BTN3,    KC_PGUP,    KC_PGDOWN
+  [0] = LAYOUT(
+       KC_MS_BTN1,    KC_MS_BTN2,    KC_MS_BTN3
     ),
-  [_LOWER] = LAYOUT(
-       KC_A,    KC_B,    KC_C,    KC_D,    KC_E
+  [1] = LAYOUT(
+       KC_TRNS,    KC_TRNS,    KC_TRNS
     ),
-  [_RAISE] = LAYOUT(
-       KC_A,    KC_B,    KC_C,    KC_D,    KC_E
+  [2] = LAYOUT(
+       KC_TRNS,    KC_TRNS,    KC_TRNS
     ),
-  [_TRACKBALL] = LAYOUT(
-       KC_A,    KC_B,    KC_C,    KC_D,    KC_E
+  [3] = LAYOUT(
+       KC_TRNS,    KC_TRNS,    KC_TRNS
     )
 };
 
-
-keyevent_t encoder1_ccw = {
-    .key = (keypos_t){.row = 0, .col = 3},
-    .pressed = false
+#if defined(ENCODER_MAP_ENABLE)
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
+    [0] =   { ENCODER_CCW_CW(KC_MS_WH_UP, KC_MS_WH_DOWN) },
+    [1] =   { ENCODER_CCW_CW(KC_TRNS, KC_TRNS)           },
+    [2] =   { ENCODER_CCW_CW(KC_TRNS, KC_TRNS)           },
+    [3] =   { ENCODER_CCW_CW(KC_TRNS, KC_TRNS)           }
 };
-
-keyevent_t encoder1_cw = {
-    .key = (keypos_t){.row = 0, .col = 4},
-    .pressed = false
-};
-
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (index == 0) { // First encoder 
-        if (clockwise) {
-            encoder1_cw.pressed = true;
-            encoder1_cw.time = (timer_read() | 1);
-            action_exec(encoder1_cw);
-        } else {
-            encoder1_ccw.pressed = true;
-            encoder1_ccw.time = (timer_read() | 1);
-            action_exec(encoder1_ccw);
-        }
-    }
-
-    return true;
-}
-
-
-void matrix_scan_user(void) {
-
-    if (IS_PRESSED(encoder1_ccw)) {
-        encoder1_ccw.pressed = false;
-        encoder1_ccw.time = (timer_read() | 1);
-        action_exec(encoder1_ccw);
-    }
-
-    if (IS_PRESSED(encoder1_cw)) {
-        encoder1_cw.pressed = false;
-        encoder1_cw.time = (timer_read() | 1);
-        action_exec(encoder1_cw);
-    }
-
-}
-
-
+#endif
 
 layer_state_t layer_state_set_user(layer_state_t state) {
 
     switch (get_highest_layer(state)) {
-    case _LOWER:
-    case _RAISE:
+    case 1:
+    case 2:
         cocot_set_scroll_mode(true);
-        break;
-    case _TRACKBALL:
-        cocot_set_scroll_mode(false);
         break;
     default:
         cocot_set_scroll_mode(false);
@@ -108,11 +57,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
   return state;
 };
 
-
 #ifdef OLED_ENABLE
 bool oled_task_user(void) {
     oled_write_layer_state();
     return false;
 }
 #endif
-

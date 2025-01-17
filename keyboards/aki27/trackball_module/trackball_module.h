@@ -19,14 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "quantum.h"
 
-#define LAYOUT( \
-    K00, K01, K02, K03, K04 \
-   ) \
-  { \
-    { K00, K01, K02, K03, K04 } \
-  }
-
-
 typedef union {
     uint32_t raw;
     struct {
@@ -39,31 +31,17 @@ typedef union {
     };
 } cocot_config_t;
 
-
-
 extern cocot_config_t cocot_config;
 
 enum cocot_keycodes {
-
-    COCOT_SAFE_RANGE = SAFE_RANGE,
-    CPI_SW,
+    CPI_SW = QK_KB_0,
     SCRL_SW,
     ROT_R15,
     ROT_L15,
     SCRL_MO,
     SCRL_TO,
     SCRL_IN,
-
 };
-
-#define CPI_SW USER00
-#define SCRL_SW USER01
-#define ROT_R15 USER02
-#define ROT_L15 USER03
-#define SCRL_MO USER04
-#define SCRL_TO USER05
-#define SCRL_IN USER06
-
 
 bool encoder_update_user(uint8_t index, bool clockwise);
 bool encoder_update_kb(uint8_t index, bool clockwise);
