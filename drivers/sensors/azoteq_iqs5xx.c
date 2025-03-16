@@ -5,6 +5,13 @@
 #include "azoteq_iqs5xx.h"
 #include "pointing_device_internal.h"
 #include "wait.h"
+#include "debug.h"
+#ifdef POINTING_DEVICE_ENABLE
+#    include "report.h"
+#endif
+#ifdef DIGITIZER_ENABLE
+#    include "digitizer.h"
+#endif
 
 #ifndef AZOTEQ_IQS5XX_ADDRESS
 #    define AZOTEQ_IQS5XX_ADDRESS (0x74 << 1)
@@ -15,8 +22,10 @@
 
 #define AZOTEQ_IQS5XX_REG_PRODUCT_NUMBER 0x0000
 #define AZOTEQ_IQS5XX_REG_PREVIOUS_CYCLE_TIME 0x000C
+#define AZOTEQ_IQS5XX_REG_ABSOLUTE_X_POSITION 0x0016
 #define AZOTEQ_IQS5XX_REG_SYSTEM_CONTROL_1 0x0432
 #define AZOTEQ_IQS5XX_REG_REPORT_RATE_ACTIVE 0x057A
+#define AZOTEQ_IQS5XX_REG_IDLE_MODE_TIMEOUT 0x0586
 #define AZOTEQ_IQS5XX_REG_SYSTEM_CONFIG_0 0x058E
 #define AZOTEQ_IQS5XX_REG_SYSTEM_CONFIG_1 0x058F
 #define AZOTEQ_IQS5XX_REG_X_RESOLUTION 0x066E
@@ -77,19 +86,9 @@
 #ifndef AZOTEQ_IQS5XX_ZOOM_CONSECUTIVE_DISTANCE
 #    define AZOTEQ_IQS5XX_ZOOM_CONSECUTIVE_DISTANCE 0x19
 #endif
-
-#if defined(AZOTEQ_IQS5XX_TPS43)
-#    define AZOTEQ_IQS5XX_WIDTH_MM 43
-#    define AZOTEQ_IQS5XX_HEIGHT_MM 40
-#    define AZOTEQ_IQS5XX_RESOLUTION_X 2048
-#    define AZOTEQ_IQS5XX_RESOLUTION_Y 1792
-#elif defined(AZOTEQ_IQS5XX_TPS65)
-#    define AZOTEQ_IQS5XX_WIDTH_MM 65
-#    define AZOTEQ_IQS5XX_HEIGHT_MM 49
-#    define AZOTEQ_IQS5XX_RESOLUTION_X 3072
-#    define AZOTEQ_IQS5XX_RESOLUTION_Y 2048
-#elif !defined(AZOTEQ_IQS5XX_WIDTH_MM) && !defined(AZOTEQ_IQS5XX_HEIGHT_MM)
-#    error "You must define one of the available azoteq trackpads or specify at least the width and height"
+#ifndef AZOTEQ_IQS5XX_EVENT_MODE
+// Event mode can't be used until the pointing code has changed (stuck buttons)
+#    define AZOTEQ_IQS5XX_EVENT_MODE false
 #endif
 
 #define DIVIDE_UNSIGNED_ROUND(numerator, denominator) (((numerator) + ((denominator) / 2)) / (denominator))
@@ -98,12 +97,14 @@
 #define AZOTEQ_IQS5XX_INCH_TO_RESOLUTION_Y(inch) (DIVIDE_UNSIGNED_ROUND((inch) * (uint32_t)AZOTEQ_IQS5XX_HEIGHT_MM * 10, 254))
 #define AZOTEQ_IQS5XX_RESOLUTION_Y_TO_INCH(px) (DIVIDE_UNSIGNED_ROUND((px) * (uint32_t)254, AZOTEQ_IQS5XX_HEIGHT_MM * 10))
 
+#ifdef POINTING_DEVICE_DRIVER_azoteq_iqs5xx
 const pointing_device_driver_t azoteq_iqs5xx_pointing_device_driver = {
     .init       = azoteq_iqs5xx_init,
     .get_report = azoteq_iqs5xx_get_report,
     .set_cpi    = azoteq_iqs5xx_set_cpi,
     .get_cpi    = azoteq_iqs5xx_get_cpi,
 };
+#endif
 
 static uint16_t azoteq_iqs5xx_product_number = AZOTEQ_IQS5XX_UNKNOWN;
 
@@ -112,12 +113,6 @@ static struct {
     uint16_t resolution_y;
 } azoteq_iqs5xx_device_resolution_t;
 
-i2c_status_t azoteq_iqs5xx_wake(void) {
-    uint8_t      data   = 0;
-    i2c_status_t status = i2c_read_register16(AZOTEQ_IQS5XX_ADDRESS, AZOTEQ_IQS5XX_REG_PREVIOUS_CYCLE_TIME, (uint8_t *)&data, sizeof(data), 1);
-    wait_us(150);
-    return status;
-}
 i2c_status_t azoteq_iqs5xx_end_session(void) {
     const uint8_t END_BYTE = 1; // any data
     return i2c_write_register16(AZOTEQ_IQS5XX_ADDRESS, AZOTEQ_IQS5XX_REG_END_COMMS, &END_BYTE, 1, AZOTEQ_IQS5XX_TIMEOUT_MS);
@@ -324,14 +319,19 @@ static i2c_status_t azoteq_iqs5xx_init_status = 1;
 
 void azoteq_iqs5xx_init(void) {
     i2c_init();
-    azoteq_iqs5xx_wake();
+    i2c_ping_address(AZOTEQ_IQS5XX_ADDRESS, 1); // wake
     azoteq_iqs5xx_reset_suspend(true, false, true);
     wait_ms(100);
-    azoteq_iqs5xx_wake();
+    i2c_ping_address(AZOTEQ_IQS5XX_ADDRESS, 1); // wake
     if (azoteq_iqs5xx_get_product() != AZOTEQ_IQS5XX_UNKNOWN) {
         azoteq_iqs5xx_setup_resolution();
         azoteq_iqs5xx_init_status = azoteq_iqs5xx_set_report_rate(AZOTEQ_IQS5XX_REPORT_RATE, AZOTEQ_IQS5XX_ACTIVE, false);
-        azoteq_iqs5xx_init_status |= azoteq_iqs5xx_set_event_mode(false, false);
+        azoteq_iqs5xx_init_status |= azoteq_iqs5xx_set_report_rate(AZOTEQ_IQS5XX_REPORT_RATE, AZOTEQ_IQS5XX_IDLE, false);
+        azoteq_iqs5xx_init_status |= azoteq_iqs5xx_set_report_rate(AZOTEQ_IQS5XX_REPORT_RATE, AZOTEQ_IQS5XX_IDLE_TOUCH, false);
+
+        uint8_t no_timeout = 255;
+        azoteq_iqs5xx_init_status |= i2c_write_register16(AZOTEQ_IQS5XX_ADDRESS, AZOTEQ_IQS5XX_REG_IDLE_MODE_TIMEOUT, &no_timeout, 1, AZOTEQ_IQS5XX_TIMEOUT_MS); // Don't enter LP1, LP2 states
+        azoteq_iqs5xx_init_status |= azoteq_iqs5xx_set_event_mode(AZOTEQ_IQS5XX_EVENT_MODE, false);
         azoteq_iqs5xx_init_status |= azoteq_iqs5xx_set_reati(true, false);
 #if defined(AZOTEQ_IQS5XX_ROTATION_90)
         azoteq_iqs5xx_init_status |= azoteq_iqs5xx_set_xy_config(false, true, true, true, false);
@@ -347,22 +347,21 @@ void azoteq_iqs5xx_init(void) {
     }
 };
 
+#ifdef POINTING_DEVICE_ENABLE
 report_mouse_t azoteq_iqs5xx_get_report(report_mouse_t mouse_report) {
-    report_mouse_t temp_report           = {0};
-    static uint8_t previous_button_state = 0;
-    static uint8_t read_error_count      = 0;
+    report_mouse_t temp_report = {0};
 
     if (azoteq_iqs5xx_init_status == I2C_STATUS_SUCCESS) {
-        azoteq_iqs5xx_base_data_t base_data = {0};
-#if !defined(POINTING_DEVICE_MOTION_PIN)
-        azoteq_iqs5xx_wake();
-#endif
-        i2c_status_t status          = azoteq_iqs5xx_get_base_data(&base_data);
-        bool         ignore_movement = false;
+        azoteq_iqs5xx_base_data_t base_data       = {0};
+        i2c_status_t              status          = azoteq_iqs5xx_get_base_data(&base_data);
+        bool                      ignore_movement = false;
 
         if (status == I2C_STATUS_SUCCESS) {
-            // pd_dprintf("IQS5XX - previous cycle time: %d \n", base_data.previous_cycle_time);
-            read_error_count = 0;
+#ifdef POINTING_DEVICE_DEBUG
+            if (base_data.previous_cycle_time > AZOTEQ_IQS5XX_REPORT_RATE) {
+                pd_dprintf("IQS5XX - previous cycle time missed, took: %dms\n", base_data.previous_cycle_time);
+            }
+#endif
             if (base_data.gesture_events_0.single_tap || base_data.gesture_events_0.press_and_hold) {
                 pd_dprintf("IQS5XX - Single tap/hold.\n");
                 temp_report.buttons = pointing_device_handle_buttons(temp_report.buttons, true, POINTING_DEVICE_BUTTON1);
@@ -403,21 +402,33 @@ report_mouse_t azoteq_iqs5xx_get_report(report_mouse_t mouse_report) {
                 temp_report.y = CONSTRAIN_HID_XY(AZOTEQ_IQS5XX_COMBINE_H_L_BYTES(base_data.y.h, base_data.y.l));
             }
 
-            previous_button_state = temp_report.buttons;
-
         } else {
-            if (read_error_count > 10) {
-                read_error_count      = 0;
-                previous_button_state = 0;
-            } else {
-                read_error_count++;
-            }
-            temp_report.buttons = previous_button_state;
-            pd_dprintf("IQS5XX - get report failed: %d \n", status);
+            pd_dprintf("IQS5XX - get report failed, i2c status: %d \n", status);
         }
     } else {
-        pd_dprintf("IQS5XX - Init failed: %d \n", azoteq_iqs5xx_init_status);
+        pd_dprintf("IQS5XX - Init failed, i2c status: %d \n", azoteq_iqs5xx_init_status);
     }
 
     return temp_report;
 }
+#endif
+
+#ifdef DIGITIZER_ENABLE
+digitizer_t digitizer_driver_get_report(digitizer_t digitizer_report) {
+    azoteq_iqs5xx_digitizer_data_t digitizer_data = {0};
+    azoteq_iqs5xx_wake();
+
+    i2c_status_t status = i2c_readReg16(AZOTEQ_IQS5XX_ADDRESS, AZOTEQ_IQS5XX_REG_ABSOLUTE_X_POSITION, (uint8_t *)&digitizer_data, sizeof(azoteq_iqs5xx_digitizer_data_t), AZOTEQ_IQS5XX_TIMEOUT_MS);
+    if (status == I2C_STATUS_SUCCESS) {
+        for (int i = 0; i < 5; i++) {
+            digitizer_report.contacts[i].x          = AZOTEQ_IQS5XX_COMBINE_H_L_BYTES(digitizer_data.fingers[i].x.h, digitizer_data.fingers[i].x.l);
+            digitizer_report.contacts[i].y          = AZOTEQ_IQS5XX_COMBINE_H_L_BYTES(digitizer_data.fingers[i].y.h, digitizer_data.fingers[i].y.l);
+            digitizer_report.contacts[i].confidence = 1;
+            digitizer_report.contacts[i].tip        = AZOTEQ_IQS5XX_COMBINE_H_L_BYTES(digitizer_data.fingers[i].strength.h, digitizer_data.fingers[i].strength.l) > 0 ? 1 : 0;
+            digitizer_report.contacts[i].type       = FINGER;
+        }
+        azoteq_iqs5xx_end_session();
+    }
+    return digitizer_report;
+}
+#endif
