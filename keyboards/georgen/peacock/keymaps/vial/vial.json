@@ -1,0 +1,39 @@
+{
+    "name": "georgen/peacock",
+    "lighting": "vialrgb",
+    "customKeycodes": [
+        { "name": "LMB_TOGGLE", "title": "Toggle left mouse button", "shortName": "LMB\nToggle" }
+    ],
+    "matrix": {
+        "rows": 1,
+        "cols": 7
+    },
+    "layouts": {
+        "labels": ["Clickable encoders"],
+        "keymap": [
+            [
+                "0,0\n\n\n\n\n\n\n\n\ne",
+                "0,1\n\n\n\n\n\n\n\n\ne",
+                { "x": 1 },
+                "0,1",
+                "0,2",
+                "0,3",
+                "0,4",
+                "0,5",
+                { "x": 1 },
+                "1,0\n\n\n\n\n\n\n\n\ne",
+                "1,1\n\n\n\n\n\n\n\n\ne"
+            ],
+            [
+                { "x": 0.5, "d": true },
+                "0,0\n\n\n0,0",
+                { "x": -1 },
+                "0,0\n\n\n0,1",
+                { "x": 8, "d": true },
+                "0,6\n\n\n0,0",
+                { "x": -1 },
+                "0,6\n\n\n0,1"
+            ]
+        ]
+    }
+}

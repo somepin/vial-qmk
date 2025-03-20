@@ -1,6 +1,6 @@
 {
     "bootmagic": {
-        "matrix": [ 0, 0 ]
+        "matrix": [ 0, 1 ]
     },
     "matrix_pins": {
         "direct": [["GP21", "GP22", "GP23", "GP24", "GP27", "GP26", "GP16"]]
@@ -28,7 +28,7 @@
             { "x": 3, "y": 0, "flags": 4 },
             { "x": 4, "y": 0, "flags": 4 },
             { "x": 5, "y": 0, "flags": 4 },
-            { "x": 0, "y": 0, "flags": 0 }
+            { "x": 0, "y": 0, "flags": 8 }
         ]
     }
 }
